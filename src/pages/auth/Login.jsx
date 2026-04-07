@@ -119,7 +119,10 @@ export default function Login() {
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Password</label>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', alignItems: 'center' }}>
+                    <label style={{ fontSize: '0.875rem', fontWeight: '500' }}>Password</label>
+                    <a href="/forgot-password" onClick={(e) => { e.preventDefault(); navigate('/forgot-password'); }} style={{ color: 'var(--color-primary)', fontSize: '0.8rem', textDecoration: 'none', fontWeight: '500' }}>Forgot password?</a>
+                  </div>
                   <input 
                     type="password" 
                     defaultValue="password123"
@@ -134,6 +137,10 @@ export default function Login() {
                 <Button variant="primary" size="lg" style={{ width: '100%', marginTop: '1rem' }}>
                   {loading ? 'Authenticating...' : 'Sign In'}
                 </Button>
+
+                <div style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
+                    Don't have an account? <a href="/register" onClick={(e) => { e.preventDefault(); navigate('/register'); }} style={{ color: 'var(--color-primary)', fontWeight: '600', textDecoration: 'none' }}>Register here</a>
+                </div>
               </form>
             </motion.div>
           )}
