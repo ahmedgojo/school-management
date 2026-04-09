@@ -1,7 +1,7 @@
 import React from 'react';
 import Card from '../../../components/ui/Card';
 import Button from '../../../components/ui/Button';
-import { Download, FileText, PieChart, TrendingUp } from 'lucide-react';
+import { Download, FileText, PieChart, TrendingUp, DollarSign } from 'lucide-react';
 
 export default function AdminReports() {
   const reports = [
@@ -75,5 +75,3 @@ export default function AdminReports() {
   );
 }
 
-// Ensure DOLLAR SIGN is mapped correctly for reports
-import { DollarSign } from 'lucide-react';
