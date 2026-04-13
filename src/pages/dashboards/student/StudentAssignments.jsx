@@ -3,10 +3,14 @@ import Card from '../../../components/ui/Card';
 import Button from '../../../components/ui/Button';
 import { Clock, CheckCircle, AlertCircle, Upload } from 'lucide-react';
 
-export default function StudentAssignments() {
-  const [activeTab, setActiveTab] = useState('pending');
+import { useToast } from '../../../components/ui/Toast';
 
-  const assignments = {
+export default function StudentAssignments() {
+  const { success } = useToast();
+  const [activeTab, setActiveTab] = useState('pending');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [assignments, setAssignments] = useState({
     pending: [
       { title: 'Wave Mechanics Lab Report', subject: 'Physics 101', due: 'Oct 28, 2026', points: 100, type: 'Lab Report' },
       { title: 'Chapter 12 Problem Set', subject: 'Mathematics 10A', due: 'Oct 30, 2026', points: 50, type: 'Homework' },
@@ -16,6 +20,30 @@ export default function StudentAssignments() {
       { title: 'Newton\'s Laws Quiz', subject: 'Physics 101', due: 'Oct 20, 2026', points: 30, score: 28, type: 'Quiz' },
       { title: 'Algebra Practice Problems', subject: 'Mathematics 10A', due: 'Oct 18, 2026', points: 40, score: 38, type: 'Homework' },
     ],
+  });
+
+  const handleSubmit = (title, points) => {
+    setIsSubmitting(true);
+    setTimeout(() => {
+      setAssignments(prev => {
+        const remainingPending = prev.pending.filter(a => a.title !== title);
+        const original = prev.pending.find(a => a.title === title);
+        const newlySubmitted = {
+          title,
+          subject: original.subject,
+          due: 'Submitted just now',
+          points,
+          score: '-', 
+          type: original.type
+        };
+        return {
+          pending: remainingPending,
+          submitted: [newlySubmitted, ...prev.submitted]
+        };
+      });
+      setIsSubmitting(false);
+      success(`Successfully submitted ${title}`);
+    }, 800);
   };
 
   const TabButton = ({ id, label }) => (
@@ -57,7 +85,12 @@ export default function StudentAssignments() {
                 <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Points</div>
                 <div style={{ fontWeight: '700' }}>{a.points} pts</div>
               </div>
-              <Button variant="primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Button 
+                variant="primary" 
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                onClick={() => handleSubmit(a.title, a.points)}
+                disabled={isSubmitting}
+              >
                 <Upload size={16}/> Submit
               </Button>
             </div>

@@ -33,10 +33,10 @@ export function ToastProvider({ children }) {
   };
 
   const colors = {
-    success: { bg: '#ECFDF5', border: '#10B981', color: '#065F46', icon: '#10B981' },
-    error: { bg: '#FEF2F2', border: '#EF4444', color: '#991B1B', icon: '#EF4444' },
-    warning: { bg: '#FFFBEB', border: '#F59E0B', color: '#92400E', icon: '#F59E0B' },
-    info: { bg: '#EFF6FF', border: '#3B82F6', color: '#1E40AF', icon: '#3B82F6' },
+    success: { bg: 'var(--color-success-light)', border: 'var(--color-success)', color: 'var(--color-text-main)', icon: 'var(--color-success)' },
+    error: { bg: 'var(--color-danger-light)', border: 'var(--color-danger)', color: 'var(--color-text-main)', icon: 'var(--color-danger)' },
+    warning: { bg: 'var(--color-warning-light)', border: 'var(--color-warning)', color: 'var(--color-text-main)', icon: 'var(--color-warning)' },
+    info: { bg: 'var(--color-info-light)', border: 'var(--color-info)', color: 'var(--color-text-main)', icon: 'var(--color-info)' },
   };
 
   return (

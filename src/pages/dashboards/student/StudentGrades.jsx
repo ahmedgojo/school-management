@@ -4,7 +4,12 @@ import Button from '../../../components/ui/Button';
 import { Download, Award, TrendingUp } from 'lucide-react';
 import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar } from 'recharts';
 
+import { useToast } from '../../../components/ui/Toast';
+import { generatePDF } from '../../../utils/pdfGenerator';
+
 export default function StudentGrades() {
+  const { success } = useToast();
+
   const grades = [
     { course: 'Mathematics 10A', grade: 'A', percent: 92, status: 'Excellent', credits: 4 },
     { course: 'Physics 11B', grade: 'B+', percent: 85, status: 'Good', credits: 4 },
@@ -21,12 +26,23 @@ export default function StudentGrades() {
     { subject: 'PE', score: 98 },
   ];
 
+  const handleDownloadFile = () => {
+    const columns = ['Course', 'Credits', 'Percent', 'Letter Grade', 'Status'];
+    const rows = grades.map(g => [g.course, g.credits.toString(), `${g.percent}%`, g.grade, g.status]);
+    
+    // Add Semester Average row
+    rows.push(['Semester Average', '15', '89.2%', 'A', 'Excellent']);
+    
+    generatePDF('Unofficial Transcript - Semester 1 2026', columns, rows, 'student_transcript.pdf');
+    success("Transcript downloaded successfully.");
+  };
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '2rem' }}>Grades & Transcripts</h1>
-        <Button variant="primary">
-          <Download size={18} style={{ marginRight: 8 }} /> Download Unofficial Transcript
+        <Button variant="primary" onClick={handleDownloadFile}>
+          <Download size={18} style={{ marginRight: 8 }} /> Download File
         </Button>
       </div>
 
@@ -87,7 +103,7 @@ export default function StudentGrades() {
                   <td style={{ padding: '1.5rem' }}>
                      <span style={{ 
                         padding: '0.25rem 0.75rem', borderRadius: '1rem', fontSize: '0.75rem', fontWeight: '600',
-                        background: 'var(--color-success)20',
+                        background: 'rgba(16, 185, 129, 0.2)',
                         color: 'var(--color-success)',
                       }}>
                         {grade.status}

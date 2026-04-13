@@ -4,6 +4,9 @@ import { ResponsiveContainer, RadialBarChart, RadialBar, Tooltip } from 'rechart
 import { Calendar, Download, Trophy } from 'lucide-react';
 import Button from '../../components/ui/Button';
 
+import { useToast } from '../../components/ui/Toast';
+import { generatePDF } from '../../utils/pdfGenerator';
+
 const performanceData = [
   { name: 'Math', score: 85, fill: 'var(--color-primary)' },
   { name: 'Science', score: 92, fill: 'var(--color-secondary)' },
@@ -12,11 +15,28 @@ const performanceData = [
 ];
 
 export default function StudentDashboard() {
+  const { success } = useToast();
+
+  const handleDownloadReport = () => {
+    const columns = ['Subject', 'Score', 'Status'];
+    const rows = performanceData.map(subject => [
+      subject.name, 
+      `${subject.score}%`,
+      subject.score >= 80 ? 'Excellent' : 'Good'
+    ]);
+    
+    // Add Attendance row
+    rows.push(['Attendance', '92%', 'Excellent']);
+    
+    generatePDF('Student Report Card - Q1 2026', columns, rows, 'student_report_card.pdf');
+    success("Report Card downloaded automatically.");
+  };
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '2rem' }}>My Progress</h1>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={handleDownloadReport}>
           <Download size={16} style={{ marginRight: 8 }} /> Download Report Card
         </Button>
       </div>

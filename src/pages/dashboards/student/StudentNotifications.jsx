@@ -1,15 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Card from '../../../components/ui/Card';
 import Button from '../../../components/ui/Button';
 import { Bell, CheckCircle, AlertCircle, Info, BookOpen } from 'lucide-react';
+import { useToast } from '../../../components/ui/Toast';
 
 export default function StudentNotifications() {
-  const notifications = [
-    { title: 'Assignment Graded', desc: 'Your "Newton\'s Laws Quiz" in Physics 101 has been graded. Score: 28/30.', type: 'success', date: 'Today, 10:00 AM', unread: true },
-    { title: 'New Assignment Posted', desc: 'Dr. Sarah Jenkins posted "Wave Mechanics Lab Report" due Oct 28.', type: 'alert', date: 'Today, 08:45 AM', unread: true },
-    { title: 'Schedule Change', desc: 'Mathematics 10A has been moved from Room 105 to Room 210 starting next week.', type: 'info', date: 'Yesterday, 04:00 PM', unread: false },
-    { title: 'New Course Material', desc: 'Chapter 5 slides have been uploaded by Dr. Jenkins for Physics 101.', type: 'material', date: 'Oct 22, 2026', unread: false },
-  ];
+  const { success } = useToast();
+  const [notifications, setNotifications] = useState([
+    { id: 1, title: 'Assignment Graded', desc: 'Your "Newton\'s Laws Quiz" in Physics 101 has been graded. Score: 28/30.', type: 'success', date: 'Today, 10:00 AM', unread: true },
+    { id: 2, title: 'New Assignment Posted', desc: 'Dr. Sarah Jenkins posted "Wave Mechanics Lab Report" due Oct 28.', type: 'alert', date: 'Today, 08:45 AM', unread: true },
+    { id: 3, title: 'Schedule Change', desc: 'Mathematics 10A has been moved from Room 105 to Room 210 starting next week.', type: 'info', date: 'Yesterday, 04:00 PM', unread: false },
+    { id: 4, title: 'New Course Material', desc: 'Chapter 5 slides have been uploaded by Dr. Jenkins for Physics 101.', type: 'material', date: 'Oct 22, 2026', unread: false },
+  ]);
+
+  const handleMarkAllRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
+    success('All notifications marked as read');
+  };
 
   const getIcon = (type) => ({
     success: <CheckCircle size={22} color="var(--color-success)" />,
@@ -22,16 +29,16 @@ export default function StudentNotifications() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '2rem' }}>Notifications</h1>
-        <Button variant="outline">Mark All as Read</Button>
+        <Button variant="outline" onClick={handleMarkAllRead}>Mark All as Read</Button>
       </div>
       <Card style={{ padding: 0 }}>
-        {notifications.map((n, idx) => (
-          <div key={idx} style={{
+        {notifications.map((n) => (
+          <div key={n.id} style={{
             padding: '1.5rem', borderBottom: '1px solid var(--color-border)',
             display: 'flex', gap: '1.25rem', alignItems: 'flex-start',
-            background: n.unread ? 'var(--color-primary-light)' : 'white',
+            background: n.unread ? 'var(--color-primary-light)' : 'var(--color-surface)',
           }}>
-            <div style={{ background: 'white', padding: '0.65rem', borderRadius: '50%', boxShadow: 'var(--shadow-sm)', flexShrink: 0 }}>{getIcon(n.type)}</div>
+            <div style={{ background: 'var(--color-bg-2)', padding: '0.65rem', borderRadius: '50%', boxShadow: 'var(--shadow-sm)', flexShrink: 0 }}>{getIcon(n.type)}</div>
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
                 <h4 style={{ margin: 0, fontWeight: '600' }}>{n.title}</h4>

@@ -320,6 +320,10 @@ input, textarea, select {
   to { transform: rotate(360deg); }
 }
 
+.spin {
+  animation: spin 1s linear infinite;
+}
+
 @keyframes countUp {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }

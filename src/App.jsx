@@ -77,6 +77,7 @@ import ParentMessages from './pages/dashboards/parent/ParentMessages.jsx';
 import ParentNotifications from './pages/dashboards/parent/ParentNotifications.jsx';
 import ParentReports from './pages/dashboards/parent/ParentReports.jsx';
 import ParentProfile from './pages/dashboards/parent/ParentProfile.jsx';
+import ParentChildBehavior from './pages/dashboards/parent/ParentChildBehavior.jsx';
 
 // Layouts
 import DashboardLayout from './components/layouts/DashboardLayout.jsx';
@@ -164,6 +165,7 @@ function AppContent() {
           <Route path="parent" element={user?.role === 'parent' ? <ParentDashboard /> : <Navigate to="/login" />} />
           <Route path="parent/children" element={user?.role === 'parent' ? <ParentChildren /> : <Navigate to="/login" />} />
           <Route path="parent/children/:id" element={user?.role === 'parent' ? <ParentChildDetails /> : <Navigate to="/login" />} />
+          <Route path="parent/behavior/:id" element={user?.role === 'parent' ? <ParentChildBehavior /> : <Navigate to="/login" />} />
           <Route path="parent/grades" element={user?.role === 'parent' ? <ParentGradesMonitoring /> : <Navigate to="/login" />} />
           <Route path="parent/attendance" element={user?.role === 'parent' ? <ParentAttendanceMonitoring /> : <Navigate to="/login" />} />
           <Route path="parent/fees" element={user?.role === 'parent' ? <ParentFees /> : <Navigate to="/login" />} />
