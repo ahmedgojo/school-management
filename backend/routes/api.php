@@ -1,0 +1,46 @@
+<?php
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\StudentController;
+use App\Http\Controllers\Api\TeacherController;
+use App\Http\Controllers\Api\ClassController;
+use App\Http\Controllers\Api\CourseController;
+use App\Http\Controllers\Api\SchoolParentController;
+use App\Http\Controllers\Api\EnrollmentController;
+use App\Http\Controllers\Api\AttendanceController;
+use App\Http\Controllers\Api\GradeController;
+use App\Http\Controllers\Api\AssignmentController;
+use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\NotificationController;
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user', function (Request $request) { return response()->json(['status' => 'success', 'data' => $request->user(), 'message' => 'User profile retrieved']); });
+
+    // Admins and Teachers access these basic modules
+    Route::middleware('role:admin,teacher')->group(function () {
+        Route::apiResource('students', StudentController::class);
+        Route::apiResource('classes', ClassController::class);
+        Route::apiResource('courses', CourseController::class);
+        Route::apiResource('enrollments', EnrollmentController::class)->except(['show', 'update']);
+        Route::apiResource('attendance', AttendanceController::class)->except(['show', 'destroy']);
+        Route::apiResource('grades', GradeController::class)->except(['show', 'destroy']);
+        Route::apiResource('assignments', AssignmentController::class);
+    });
+
+    // Admins only
+    Route::middleware('role:admin')->group(function () {
+        Route::apiResource('teachers', TeacherController::class);
+        Route::apiResource('parents', SchoolParentController::class);
+        Route::apiResource('payments', PaymentController::class)->except(['show', 'destroy']);
+    });
+
+    // Universal Access Modules for authenticated users (logic limited by Controller typically, but here open for CRUD)
+    Route::apiResource('messages', MessageController::class)->except(['show', 'destroy']);
+    Route::apiResource('notifications', NotificationController::class)->except(['show', 'destroy']);
+});
