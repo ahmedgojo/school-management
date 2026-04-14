@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import Card from '../../../components/ui/Card';
 import Button from '../../../components/ui/Button';
-import { Search, Mail, MessageSquare } from 'lucide-react';
+import { Search, Mail, MessageSquare, UserPlus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function TeacherStudents() {
+  const navigate = useNavigate();
   const [filterClass, setFilterClass] = useState('All Classes');
 
   const students = [
@@ -19,6 +21,9 @@ export default function TeacherStudents() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '2rem' }}>Student Roster</h1>
+        <Button variant="primary" onClick={() => navigate('/dashboard/teacher/students/add')} style={{ gap: '0.6rem', fontWeight: '700' }}>
+            <UserPlus size={18} /> Register New Student
+        </Button>
       </div>
 
       <Card style={{ padding: 0 }}>

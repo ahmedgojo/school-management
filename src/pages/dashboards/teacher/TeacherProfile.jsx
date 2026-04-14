@@ -1,71 +1,176 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import Card from '../../../components/ui/Card';
 import Button from '../../../components/ui/Button';
-import { Upload, Shield, Bell, User } from 'lucide-react';
+import { Upload, Shield, Bell, User, Mail, Phone, BookOpen, Camera, Save, RotateCcw } from 'lucide-react';
+import { useToast } from '../../../components/ui/Toast';
+
+const initialData = {
+  firstName: 'Sarah',
+  lastName: 'Jenkins',
+  email: 'demo@teacher.com',
+  phone: '+1 (555) 234-5678',
+  specialization: 'Physics, Advanced Mathematics',
+  bio: 'Physics educator with 12+ years of experience. PhD in Applied Physics from MIT. Passionate about making science accessible and engaging for all students.',
+  department: 'Science Department',
+  avatar: null
+};
 
 export default function TeacherProfile() {
+  const { success, warning } = useToast();
+  const [formData, setFormData] = useState(initialData);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const fileInputRef = useRef(null);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result);
+        setFormData(prev => ({ ...prev, avatar: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSave = (e) => {
+    e.preventDefault();
+    setTimeout(() => {
+      success("Profile configurations updated successfully across the board.");
+    }, 500);
+  };
+
+  const handleDiscard = () => {
+    setFormData(initialData);
+    setPreviewUrl(null);
+    warning("Unsaved changes discarded.");
+  };
+
   return (
     <div>
-      <h1 style={{ fontSize: '2rem', marginBottom: '2rem' }}>My Profile</h1>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 3fr', gap: '2rem' }}>
+      <h1 style={{ fontSize: '2rem', marginBottom: '2rem' }}>Personal Profile Settings</h1>
+      
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 1fr) 3fr', gap: '2rem' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <Card style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-            <div style={{ width: '100px', height: '100px', borderRadius: '50%', background: 'var(--color-primary-light)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '1rem', position: 'relative' }}>
-              SJ
-              <button style={{ position: 'absolute', bottom: 0, right: 0, background: 'var(--color-primary)', color: 'white', border: 'none', borderRadius: '50%', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                <Upload size={14}/>
-              </button>
+          <Card style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '2.5rem 1.5rem' }}>
+            <div style={{ position: 'relative', marginBottom: '1.5rem' }}>
+                <div style={{ width: '130px', height: '130px', borderRadius: '50%', background: 'var(--color-primary-light)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3.5rem', fontWeight: '800', overflow: 'hidden', border: '5px solid var(--color-surface)', boxShadow: 'var(--shadow-lg)' }}>
+                    {previewUrl ? (
+                        <img src={previewUrl} alt="Avatar Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                        'SJ'
+                    )}
+                </div>
+                <button 
+                  onClick={() => fileInputRef.current.click()}
+                  style={{ position: 'absolute', bottom: '8px', right: '8px', background: 'var(--color-primary)', color: 'white', border: 'none', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: 'var(--shadow-md)', transition: 'transform 0.2s' }}
+                  onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                  onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                >
+                    <Camera size={20}/>
+                </button>
+                <input type="file" ref={fileInputRef} onChange={handleFileChange} hidden accept="image/*" />
             </div>
-            <h3 style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>Dr. Sarah Jenkins</h3>
-            <p style={{ color: 'var(--color-text-muted)', margin: 0, fontSize: '0.875rem' }}>Science Department</p>
-            <span style={{ marginTop: '1rem', background: 'var(--color-primary)20', color: 'var(--color-primary)', padding: '0.25rem 0.75rem', borderRadius: '1rem', fontSize: '0.75rem', fontWeight: '600' }}>Senior Faculty</span>
+            
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.25rem', fontWeight: '800', color: 'var(--color-text-main)' }}>Dr. {formData.firstName} {formData.lastName}</h3>
+            <p style={{ color: 'var(--color-text-muted)', margin: 0, fontSize: '0.9rem', fontWeight: '600' }}>{formData.department}</p>
+            
+            <div style={{ marginTop: '1.5rem', width: '100%' }}>
+                <span style={{ display: 'inline-block', background: 'rgba(79, 70, 229, 0.1)', color: 'var(--color-primary)', padding: '0.4rem 1rem', borderRadius: '2rem', fontSize: '0.85rem', fontWeight: '800', border: '1px solid rgba(79, 70, 229, 0.2)' }}>Senior Faculty Member</span>
+            </div>
           </Card>
+          
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            {[{ icon: <User size={18}/>, label: 'Personal Info', active: true }, { icon: <Shield size={18}/>, label: 'Security', active: false }, { icon: <Bell size={18}/>, label: 'Preferences', active: false }].map((item, i) => (
-              <button key={i} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.875rem 1rem', background: item.active ? 'var(--color-bg)' : 'transparent', border: item.active ? '1px solid var(--color-border)' : '1px solid transparent', borderRadius: 'var(--radius-md)', cursor: 'pointer', color: item.active ? 'var(--color-text-main)' : 'var(--color-text-muted)', fontWeight: item.active ? '600' : '500' }}>
-                {item.icon} {item.label}
-              </button>
-            ))}
-          </div>
+                {[
+                  { id: 'personal', icon: <User size={18}/>, label: 'Identity Settings', active: true },
+                  { id: 'security', icon: <Shield size={18}/>, label: 'Password & Auth', active: false },
+                  { id: 'notifications', icon: <Bell size={18}/>, label: 'Alert Preferences', active: false }
+                ].map((item) => (
+                    <button 
+                      key={item.id}
+                      style={{ 
+                        display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem 1.25rem', 
+                        background: item.active ? 'var(--color-bg)' : 'transparent', 
+                        border: item.active ? '1px solid var(--color-border)' : '1px solid transparent', 
+                        borderRadius: 'var(--radius-lg)', textAlign: 'left', fontWeight: '700', cursor: 'pointer', 
+                        color: item.active ? 'var(--color-primary)' : 'var(--color-text-muted)',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                        {item.icon} {item.label}
+                    </button>
+                ))}
+            </div>
         </div>
 
-        <Card>
-          <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid var(--color-border)' }}>Personal Information</h2>
-          <form style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>First Name</label>
-                <input type="text" defaultValue="Sarah" style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', outline: 'none' }} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <Card style={{ padding: '2.5rem' }}>
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem', paddingBottom: '1rem', borderBottom: '1px solid var(--color-border)', fontWeight: '800', color: 'var(--color-text-main)' }}>Personal Information</h2>
+            
+            <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                <div style={{ position: 'relative' }}>
+                  <label className="form-label">First Name</label>
+                  <div style={{ position: 'relative' }}>
+                    <User size={16} style={{ position: 'absolute', left: 14, top: 14, color: 'var(--color-text-muted)' }} />
+                    <input name="firstName" type="text" value={formData.firstName} onChange={handleChange} className="form-input" style={{ paddingLeft: '2.75rem' }} required />
+                  </div>
+                </div>
+                <div style={{ position: 'relative' }}>
+                  <label className="form-label">Last Name</label>
+                  <div style={{ position: 'relative' }}>
+                    <User size={16} style={{ position: 'absolute', left: 14, top: 14, color: 'var(--color-text-muted)' }} />
+                    <input name="lastName" type="text" value={formData.lastName} onChange={handleChange} className="form-input" style={{ paddingLeft: '2.75rem' }} required />
+                  </div>
+                </div>
               </div>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Last Name</label>
-                <input type="text" defaultValue="Jenkins" style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', outline: 'none' }} />
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                <div>
+                  <label className="form-label">Official Email</label>
+                  <div style={{ position: 'relative' }}>
+                    <Mail size={16} style={{ position: 'absolute', left: 14, top: 14, color: 'var(--color-text-muted)' }} />
+                    <input type="email" value={formData.email} readOnly className="form-input" style={{ paddingLeft: '2.75rem', background: 'var(--color-bg)', color: 'var(--color-text-muted)', cursor: 'not-allowed' }} />
+                  </div>
+                </div>
+                <div>
+                  <label className="form-label">Mobile Connectivity</label>
+                  <div style={{ position: 'relative' }}>
+                    <Phone size={16} style={{ position: 'absolute', left: 14, top: 14, color: 'var(--color-text-muted)' }} />
+                    <input name="phone" type="tel" value={formData.phone} onChange={handleChange} className="form-input" style={{ paddingLeft: '2.75rem' }} />
+                  </div>
+                </div>
               </div>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+
               <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Email</label>
-                <input type="email" defaultValue="demo@teacher.com" readOnly style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', outline: 'none', background: 'var(--color-bg)', color: 'var(--color-text-muted)' }} />
+                <label className="form-label">Expertise & Specialization</label>
+                <div style={{ position: 'relative' }}>
+                  <BookOpen size={16} style={{ position: 'absolute', left: 14, top: 14, color: 'var(--color-text-muted)' }} />
+                  <input name="specialization" type="text" value={formData.specialization} onChange={handleChange} className="form-input" style={{ paddingLeft: '2.75rem' }} />
+                </div>
               </div>
+
               <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Phone</label>
-                <input type="tel" defaultValue="+1 (555) 234-5678" style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', outline: 'none' }} />
+                <label className="form-label">Professional Biography</label>
+                <textarea name="bio" rows={5} value={formData.bio} onChange={handleChange} className="form-input" style={{ resize: 'vertical' }} />
               </div>
-            </div>
-            <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Subject Specialization</label>
-              <input type="text" defaultValue="Physics, Advanced Mathematics" style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', outline: 'none' }} />
-            </div>
-            <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Bio</label>
-              <textarea rows={4} defaultValue="Physics educator with 12+ years of experience. PhD in Applied Physics from MIT. Passionate about making science accessible and engaging for all students." style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', outline: 'none', resize: 'vertical' }} />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
-              <Button variant="outline">Discard</Button>
-              <Button variant="primary">Save Changes</Button>
-            </div>
-          </form>
-        </Card>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem', borderTop: '1px solid var(--color-border)', paddingTop: '2rem' }}>
+                <Button variant="outline" type="button" onClick={handleDiscard} style={{ gap: '0.6rem', fontWeight: '700' }}>
+                    <RotateCcw size={18}/> Discard Changes
+                </Button>
+                <Button variant="primary" type="submit" style={{ gap: '0.6rem', fontWeight: '700' }}>
+                    <Save size={18}/> Update System Profile
+                </Button>
+              </div>
+            </form>
+          </Card>
+        </div>
       </div>
     </div>
   );

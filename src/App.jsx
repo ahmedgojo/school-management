@@ -50,6 +50,7 @@ import TeacherMessages from './pages/dashboards/teacher/TeacherMessages.jsx';
 import TeacherNotifications from './pages/dashboards/teacher/TeacherNotifications.jsx';
 import TeacherProfilePage from './pages/dashboards/teacher/TeacherProfile.jsx';
 import TeacherSettings from './pages/dashboards/teacher/TeacherSettings.jsx';
+import TeacherAddStudent from './pages/dashboards/teacher/TeacherAddStudent.jsx';
 
 // Student Dashboard
 import StudentDashboard from './pages/dashboards/StudentDashboard.jsx';
@@ -138,6 +139,7 @@ function AppContent() {
           <Route path="teacher/classes/:id" element={user?.role === 'teacher' ? <TeacherClassDetails /> : <Navigate to="/login" />} />
           <Route path="teacher/students" element={user?.role === 'teacher' ? <TeacherStudents /> : <Navigate to="/login" />} />
           <Route path="teacher/attendance" element={user?.role === 'teacher' ? <TeacherAttendance /> : <Navigate to="/login" />} />
+          <Route path="teacher/students/add" element={user?.role === 'teacher' ? <TeacherAddStudent /> : <Navigate to="/login" />} />
           <Route path="teacher/grades" element={user?.role === 'teacher' ? <TeacherGrades /> : <Navigate to="/login" />} />
           <Route path="teacher/assignments" element={user?.role === 'teacher' ? <TeacherAssignments /> : <Navigate to="/login" />} />
           <Route path="teacher/materials" element={user?.role === 'teacher' ? <TeacherUploadMaterials /> : <Navigate to="/login" />} />
